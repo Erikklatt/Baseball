@@ -5,25 +5,32 @@ import axios from "axios";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
 import { PitchPlot, PitchPlotPitch } from "../../../components/ui/pitch-plot";
-import styled from "styled-components";
 import Avatar from "@mui/material/Avatar";
 import PitchTable from "@/components/pitchTable";
 import { getFillColor } from "../../utility";
-import {
-  Box,
-  FormControl,
-  Grid2,
-  InputLabel,
-  ListItem,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import LabelValueList, { LabelValue } from "@/components/LabelValueList";
+import styled, { keyframes } from "styled-components";
+
+const colorChange = keyframes`
+  0% { border-color: #FF6600; }
+  33% { border-color: #FFD100; }
+  67% { border-color: #FFFFFF; }
+  100% { border-color: #A7A9AC; }
+`;
+
+const LoaderWrapper = styled.div`
+  width: 100px; /* Adjust size as needed */
+  height: 100px; /* Adjust size as needed */
+  border: 10px solid transparent; /* Adjust thickness as needed */
+  border-radius: 50%;
+  border-top-color: #ff6600; /* Initial color */
+  animation: ${colorChange} 2s linear infinite;
+`;
 
 interface PitcherInfo {
   id: string;
@@ -76,7 +83,7 @@ export default function Page({ params }: { params: { pitcherId: string } }) {
   const [selectedPitcherId, setSelectedPitcherId] = useState<string | null>(
     pitcherId
   );
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [pitchers, setPitchers] = useState<PitcherInfo[]>([]);
   const [pitcherInfo, setPitcherInfo] = useState<PitcherInfo | null>(null);
   const [pitcherStats, setPitcherStats] = useState<PitchesData | null>(null);
@@ -88,6 +95,7 @@ export default function Page({ params }: { params: { pitcherId: string } }) {
 
   useEffect(() => {
     const fetchPitchers = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `https://mia-api.vercel.app/api/pitchers`
@@ -95,6 +103,10 @@ export default function Page({ params }: { params: { pitcherId: string } }) {
         setPitchers(response.data.pitchers);
       } catch (error) {
         console.error("Error fetching pitchers: ", error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 5000);
       }
     };
 
@@ -163,82 +175,101 @@ export default function Page({ params }: { params: { pitcherId: string } }) {
   ];
 
   return (
-    <>
-      <FormControl variant="outlined" sx={{ width: "200px" }}>
-        <InputLabel id="pitcher-select-label">Select Pitcher</InputLabel>
-        <Select
-          labelId="pitcher-select-label"
-          value={selectedPitcherId}
-          onChange={(e) => setSelectedPitcherId(e.target.value)}
-          label="Select Pitcher"
+    <div>
+      {loading ? ( // Show loader while loading
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="89vh"
         >
-          {pitchers.map((pitcher) => (
-            <MenuItem key={pitcher.id} value={pitcher.id}>
-              {pitcher.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      {pitcherInfo ? (
-        <div className="">
-          <Card style={{ display: "flex" }}>
-            <div style={{ width: "700px" }}>
-              <CardHeader style={{ display: "flex", flexDirection: "row" }}>
-                <Avatar
-                  alt="Remy Sharp"
-                  sx={{ width: 56, height: 56 }}
-                  src={pitcherImg}
-                />
-                <div style={{ paddingLeft: "16px" }}>
-                  <CardTitle>{pitcherInfo.name}</CardTitle>
-                  <div>{pitcherInfo.organization_name}</div>
-                </div>
-              </CardHeader>
-              <CardContent
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "336px",
-                }}
-              >
-                <LabelValue
-                  label={"Age"}
-                  value={
-                    new Date().getFullYear() -
-                    new Date(pitcherInfo.pitcher_birth_date).getFullYear()
-                  }
-                />
-                <LabelValue label="Stance" value={pitcherInfo.pitcher_stance} />
-                <LabelValue
-                  label="Position"
-                  value={pitcherInfo.pitcher_position}
-                />
-              </CardContent>
-              <div style={{ display: "flex" }}>
-                <PitchPlot
-                  className="w-64"
-                  onPitchClick={handlePitchClick}
-                  pitches={pitches}
-                />
-                {open ? (
-                  <LabelValueList
-                    items={items}
-                    onClose={handleLabelValueListClose}
-                  />
-                ) : null}
-              </div>
-            </div>
-            <div style={{ width: "100%" }}>
-              <PitchTable
-                rowData={pitcherStats}
-                selectedPitchId={selectedPitchId}
-              />
-            </div>
-          </Card>
-        </div>
+          <LoaderWrapper />
+        </Box>
       ) : (
-        <div>No player Found</div>
+        <div>
+          <FormControl
+            variant="outlined"
+            style={{ background: "#FF6600", borderRadius: "4px" }}
+            sx={{ width: "200px" }}
+          >
+            <InputLabel id="pitcher-select-label" style={{ color: "#FFFFFF" }}>
+              Select Pitcher
+            </InputLabel>
+            <Select
+              labelId="pitcher-select-label"
+              value={selectedPitcherId}
+              onChange={(e) => setSelectedPitcherId(e.target.value)}
+              label="Select Pitcher"
+              style={{ color: "#FFFFFF" }}
+            >
+              {pitchers.map((pitcher) => (
+                <MenuItem key={pitcher.id} value={pitcher.id}>
+                  {pitcher.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <div>
+            <Card style={{ display: "flex" }}>
+              <div style={{ width: "700px" }}>
+                <CardHeader style={{ display: "flex", flexDirection: "row" }}>
+                  <Avatar
+                    alt="Remy Sharp"
+                    sx={{ width: 56, height: 56 }}
+                    src={pitcherImg}
+                  />
+                  <div style={{ paddingLeft: "16px" }}>
+                    <CardTitle>{pitcherInfo.name}</CardTitle>
+                    <div>{pitcherInfo.organization_name}</div>
+                  </div>
+                </CardHeader>
+                <CardContent
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "336px",
+                  }}
+                >
+                  <LabelValue
+                    label={"Age"}
+                    value={
+                      new Date().getFullYear() -
+                      new Date(pitcherInfo.pitcher_birth_date).getFullYear()
+                    }
+                  />
+                  <LabelValue
+                    label="Stance"
+                    value={pitcherInfo.pitcher_stance}
+                  />
+                  <LabelValue
+                    label="Position"
+                    value={pitcherInfo.pitcher_position}
+                  />
+                </CardContent>
+                <div style={{ display: "flex" }}>
+                  <PitchPlot
+                    className="w-64"
+                    onPitchClick={handlePitchClick}
+                    pitches={pitches}
+                  />
+                  {open ? (
+                    <LabelValueList
+                      items={items}
+                      onClose={handleLabelValueListClose}
+                    />
+                  ) : null}
+                </div>
+              </div>
+              <div style={{ width: "100%" }}>
+                <PitchTable
+                  rowData={pitcherStats}
+                  selectedPitchId={selectedPitchId}
+                />
+              </div>
+            </Card>
+          </div>
+        </div>
       )}
-    </>
+    </div>
   );
 }

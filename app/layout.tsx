@@ -34,7 +34,17 @@ export default function RootLayout({
         >
           Miami Marlins Baseball
         </nav>
-        <main className="pt-24 px-8">{children}</main>
+        <main
+          style={{
+            background: "#0078C8",
+            height: "100vh",
+            paddingLeft: "8px",
+            paddingRight: "8px",
+          }}
+          className="pt-24 px-8"
+        >
+          {children}
+        </main>
       </body>
     </html>
   );
