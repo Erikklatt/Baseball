@@ -49,7 +49,7 @@ const styles = {
     border: "1px solid #ccc",
     borderRadius: "8px",
     padding: "16px",
-    maxWidth: "300px",
+    width: "225px",
     backgroundColor: "#f9f9f9",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   },

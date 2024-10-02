@@ -215,7 +215,12 @@ export default function Page({ params }: { params: { pitcherId: string } }) {
                 <CardHeader style={{ display: "flex", flexDirection: "row" }}>
                   <Avatar
                     alt="Remy Sharp"
-                    sx={{ width: 56, height: 56 }}
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      border: "2px solid",
+                      borderColor: "#FF6600",
+                    }}
                     src={pitcherImg}
                   />
                   <div style={{ paddingLeft: "16px" }}>
@@ -246,7 +251,13 @@ export default function Page({ params }: { params: { pitcherId: string } }) {
                     value={pitcherInfo.pitcher_position}
                   />
                 </CardContent>
-                <div style={{ display: "flex" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    paddingLeft: "1.5rem",
+                    height: "320px",
+                  }}
+                >
                   <PitchPlot
                     className="w-64"
                     onPitchClick={handlePitchClick}

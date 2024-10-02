@@ -19,17 +19,15 @@ const PitchTable = ({ rowData, selectedPitchId }) => {
     { headerName: "Velocity", field: "velocity" },
     { headerName: "Spin Rate", field: "spin_rate" },
   ];
-  console.log("rowData", rowData);
+
   return (
-    <div className="ag-theme-alpine" style={{ height: 500 }}>
+    <div className="ag-theme-alpine" style={{ height: 500, padding: "1.5rem" }}>
       <AgGridReact
         rowData={rowData}
         columnDefs={columnDefs}
         pagination={true}
         rowClassRules={{
           "highlight-row": (params) => {
-            console.log("Row Pitch ID:", params.data.pitcher_id);
-            console.log("Selected Pitch ID:", selectedPitchId);
             return params.data.pitch_id === selectedPitchId;
           },
         }}
