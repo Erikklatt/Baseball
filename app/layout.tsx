@@ -36,7 +36,7 @@ export default function RootLayout({
         </nav>
         <main
           style={{
-            background: "#0078C8",
+            background: "#00A3E0",
             height: "100vh",
             paddingLeft: "8px",
             paddingRight: "8px",

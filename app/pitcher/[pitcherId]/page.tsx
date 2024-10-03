@@ -176,7 +176,7 @@ export default function Page({ params }: { params: { pitcherId: string } }) {
 
   return (
     <div>
-      {loading ? ( // Show loader while loading
+      {loading ? (
         <Box
           display="flex"
           justifyContent="center"
