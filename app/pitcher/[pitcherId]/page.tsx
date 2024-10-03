@@ -24,11 +24,11 @@ const colorChange = keyframes`
 `;
 
 const LoaderWrapper = styled.div`
-  width: 100px; /* Adjust size as needed */
-  height: 100px; /* Adjust size as needed */
-  border: 10px solid transparent; /* Adjust thickness as needed */
+  width: 100px;
+  height: 100px;
+  border: 10px solid transparent;
   border-radius: 50%;
-  border-top-color: #ff6600; /* Initial color */
+  border-top-color: #ff6600;
   animation: ${colorChange} 2s linear infinite;
 `;
 
